@@ -43,6 +43,7 @@ public class Plateau {
         /**
          * On récupère les voisins
          * Gauche, Droite, Haut, Bas
+         * et en diagonale
          */
 
         // Gauche
@@ -63,6 +64,26 @@ public class Plateau {
         // Bas
         if(y < this.matrice[x].length - 1) {
             voisins.add(this.graphe.sommets.get(this.graphe.rangSommet(new Sommet("s_" + x + "_" + (y + 1)))));
+        }
+
+        // Diagonale Haut Gauche
+        if(x > 0 && y > 0) {
+            voisins.add(this.graphe.sommets.get(this.graphe.rangSommet(new Sommet("s_" + (x - 1) + "_" + (y - 1)))));
+        }
+
+        // Diagonale Haut Droite
+        if(x < this.matrice.length - 1 && y > 0) {
+            voisins.add(this.graphe.sommets.get(this.graphe.rangSommet(new Sommet("s_" + (x + 1) + "_" + (y - 1)))));
+        }
+
+        // Diagonale Bas Gauche
+        if(x > 0 && y < this.matrice[x].length - 1) {
+            voisins.add(this.graphe.sommets.get(this.graphe.rangSommet(new Sommet("s_" + (x - 1) + "_" + (y + 1)))));
+        }
+
+        // Diagonale Bas Droite
+        if(x < this.matrice.length - 1 && y < this.matrice[x].length - 1) {
+            voisins.add(this.graphe.sommets.get(this.graphe.rangSommet(new Sommet("s_" + (x + 1) + "_" + (y + 1)))));
         }
 
         return voisins;
