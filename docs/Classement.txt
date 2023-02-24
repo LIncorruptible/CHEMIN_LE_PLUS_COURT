@@ -1,0 +1,16 @@
+Niveau 0
+
+	genererMatrice	
+	genererCoordonnees
+	main
+
+Niveau 1
+
+	Plateau			Graphe		Sommet				Arc
+
+Niveau 2
+
+	voisinnage			rangSommet		determinePredecesseurs
+	matriceVersGraphe		Dijsktra		determineSuccesseurs
+	cheminLePlusCourt
+	afficherMatrice

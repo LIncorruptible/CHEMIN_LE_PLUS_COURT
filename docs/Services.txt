@@ -1,0 +1,30 @@
+Main
+
+public static int[][] genererMatrice(int largeur, int hauteur, int min, int max)
+public static int[] genererCoordonnees(int largeur, int hauteur)
+public static void main(String[] args)
+
+Plateau
+
+public Plateau(int[][] matrice)
+public List<Sommet> voisinnage(Sommet sommet)
+public void matriceVersGraphe()
+public void cheminLePlusCourt(int x_depart, int y_depart, int x_arrive, int y_arrive)
+public void afficherMatrice() 
+
+Graphe
+
+public Graphe()
+public int rangSommet(Sommet sommet)
+public List<Sommet> Dijsktra(Sommet depart, Sommet arrive)
+
+Sommet 
+
+public Sommet(String nom)
+public Sommet(Sommet sommet)
+public void determinePredecesseurs()
+public void determineSuccesseurs()
+
+Arc 
+
+public Arc(Sommet depart, Sommet arrive, int poids)
