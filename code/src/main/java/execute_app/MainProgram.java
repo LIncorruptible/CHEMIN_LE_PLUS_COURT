@@ -73,6 +73,10 @@ public class MainProgram {
             case 1:
                 sc = new Scanner(System.in);
 
+                Plateau plateau = new Plateau(matrice);
+                plateau.afficherMatrice();
+                plateau.matriceVersGraphe();
+
                 System.out.println("Choisissez un couple de coordonnées pour trouver le chemin le plus court");
 
                 System.out.println("Coordonnées de départ : ");
@@ -87,9 +91,6 @@ public class MainProgram {
                 System.out.print("> colonne : ");
                 int y2 = sc.nextInt();
 
-                Plateau plateau = new Plateau(matrice);
-                plateau.matriceVersGraphe();
-                plateau.afficherMatrice();
                 plateau.cheminLePlusCourt(x1, y1, x2, y2);
                 break;
             case 2:
@@ -111,8 +112,8 @@ public class MainProgram {
                 int[] coordonneesArrivee = genererCoordonnees(largeur, hauteur);
 
                 Plateau plateauAleatoire = new Plateau(matriceAleatoire);
-                plateauAleatoire.matriceVersGraphe();
                 plateauAleatoire.afficherMatrice();
+                plateauAleatoire.matriceVersGraphe();
                 plateauAleatoire.cheminLePlusCourt(coordonneesDepart[0], coordonneesDepart[1], coordonneesArrivee[0], coordonneesArrivee[1]);
                 break;
             default:

@@ -155,22 +155,50 @@ public class Plateau {
 
     /**
      * Cette méthode permet d'afficher la matrice.
+     * Avec un cadrage pour que les valeurs soient alignées.
+     * Chaque cellule est encadrée par des "|" et séparée par des espaces.
+     * Chaque ligne est séparée par des "-".
+     * Chaque colonne est séparée par des "+".
+     * La première ligne contient les coordonnées en y.
+     * La première colonne contient les coordonnées en x.
+     * La première cellule est vide.
      */
     public void afficherMatrice() {
-        /**
-         * Affichage de la matrice
-         * Avec numéro de ligne et numéro de colonne
-         */
-        System.out.print("  ");
-        for(int i = 0; i < this.matrice[0].length; i++) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
+        int cadrage = 0;
 
-        for(int i = 0; i < this.matrice.length; i++) {
-            System.out.print(i + " ");
-            for(int j = 0; j < this.matrice[i].length; j++) {
-                System.out.print(this.matrice[i][j] + " ");
+        /**
+         * On récupère le nombre de chiffres du plus grand nombre de la matrice
+         */
+        for (int i = 0; i < this.matrice.length; i++) {
+            for (int j = 0; j < this.matrice[i].length; j++) {
+                if (String.valueOf(this.matrice[i][j]).length() > cadrage) {
+                    cadrage = String.valueOf(this.matrice[i][j]).length();
+                }
+            }
+        }
+
+        /**
+         * On affiche la première ligne
+         */
+        System.out.print(" ".repeat(cadrage + 1));
+        for (int i = 0; i < this.matrice[0].length; i++) {
+            System.out.print("| " + i + " ".repeat(cadrage - String.valueOf(i).length()) + " ");
+        }
+        System.out.println("|");
+
+        /**
+         * On affiche les lignes suivantes
+         */
+        for (int i = 0; i < this.matrice.length; i++) {
+            System.out.print("-".repeat(cadrage + 1));
+            for (int j = 0; j < this.matrice[i].length; j++) {
+                System.out.print("+" + "-".repeat(cadrage + 2));
+            }
+            System.out.println();
+
+            System.out.print(i + " ".repeat(cadrage - String.valueOf(i).length()) + " |");
+            for (int j = 0; j < this.matrice[i].length; j++) {
+                System.out.print(" " + this.matrice[i][j] + " ".repeat(cadrage - String.valueOf(this.matrice[i][j]).length()) + " |");
             }
             System.out.println();
         }
