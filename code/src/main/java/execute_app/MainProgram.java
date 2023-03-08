@@ -11,34 +11,6 @@ import java.util.List;
 
 public class MainProgram {
     static int I = 1024;
-    public static int[][] genererMatrice(int largeur, int hauteur, int min, int max) {
-        int[][] matrice = new int[hauteur][largeur];
-        for(int i = 0; i < hauteur; i++) {
-            for(int j = 0; j < largeur; j++) {
-                matrice[i][j] = (int) (Math.random() * (max - min + 1) + min);
-            }
-        }
-        return matrice;
-    }
-    public static int[] genererCoordonnees(int largeur, int hauteur) {
-        int[] coordonnees = new int[2];
-        coordonnees[0] = (int) (Math.random() * (hauteur - 1));
-        coordonnees[1] = (int) (Math.random() * (largeur - 1));
-        return coordonnees;
-    }
-
-    public static void afficherTrajectoire(List<List<Sommet>> trajectoire) {
-        for(List<Sommet> sous_trajectoire : trajectoire) {
-            for(Sommet sommet : sous_trajectoire) {
-                System.out.print(sommet.nom + " ");
-
-                if(sommet != sous_trajectoire.get(sous_trajectoire.size() - 1)) {
-                    System.out.print("-> ");
-                }
-            }
-            System.out.println();
-        }
-    }
 
     public static void traduirePourLeCode(int[][] matrice_interets, int[][] matrice_strategies, int[] obligatoire, int[] depart) {
         for (int i = 0; i < matrice_strategies.length; i++) {
@@ -57,20 +29,6 @@ public class MainProgram {
 
         depart[0]--;
         depart[1]--;
-    }
-
-    public static void retranscriptionPourLeCode(List<Sommet> chemin) {
-        for (int i = 0; i < chemin.size(); i++) {
-            String[] nom = chemin.get(i).nom.split("_");
-
-            int x = Integer.parseInt(nom[1]);
-            int y = Integer.parseInt(nom[2]);
-
-            x += 1;
-            y += 1;
-
-            chemin.get(i).nom = "s_" + x + "_" + y;
-        }
     }
     public static void main(String[] args) {
         int[][] matrice = {
