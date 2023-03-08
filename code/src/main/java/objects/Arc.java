@@ -10,10 +10,4 @@ public class Arc {
         this.arrive = arrive;
         this.poids = poids;
     }
-
-    public Arc() {
-        this.depart = null;
-        this.arrive = null;
-        this.poids = 0;
-    }
 }
