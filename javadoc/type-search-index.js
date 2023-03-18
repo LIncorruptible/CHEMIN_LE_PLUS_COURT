@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"objects","l":"Arc"},{"p":"objects","l":"Graphe"},{"p":"execute_app","l":"MainProgram"},{"p":"objects","l":"Plateau"},{"p":"objects","l":"Sommet"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"objets","l":"Arc"},{"p":"objets","l":"Carte"},{"p":"objets","l":"Graphe"},{"p":"<Unnamed>","l":"Main"},{"p":"objets","l":"Sommet"}];updateSearchResults();

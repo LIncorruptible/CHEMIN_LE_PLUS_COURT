@@ -2,14 +2,27 @@ package objets;
 
 import java.util.*;
 
+/**
+ * Classe représentant un graphe.
+ */
 public class Graphe {
 
+    /**
+     * Liste des sommets du graphe.
+     */
     private List<Sommet> sommets;
 
+    /**
+     * Constructeur par défaut.
+     */
     public Graphe(List<Sommet> sommets) {
         this.sommets = sommets;
     }
 
+    /**
+     * Constructeur de graphe à partir d'une matrice d'adjacences.
+     * @param matrice_adjacences Matrice d'adjacences.
+     */
     public Graphe(int[][] matrice_adjacences) {
 
         int nb_lignes = matrice_adjacences.length;
@@ -53,18 +66,27 @@ public class Graphe {
         }
     }
 
+    /**
+     * Constructeur de graphe à partir d'un autre graphe.
+     * @param graphe Graphe à copier.
+     */
     public Graphe(Graphe graphe) {
         this(graphe.getSommets());
     }
 
+    /**
+     * Retourne la liste des sommets du graphe.
+     * @return Liste des sommets du graphe.
+     */
     public List<Sommet> getSommets() {
         return sommets;
     }
 
-    public void setSommets(List<Sommet> sommets) {
-        this.sommets = sommets;
-    }
-
+    /**
+     * Retourne l'indice d'un sommet dans la liste des sommets du graphe.
+     * @param sommet Sommet à rechercher.
+     * @return Indice du sommet dans la liste des sommets du graphe.
+     */
     public int getIndexOfSommet(Sommet sommet) {
 
         for(int indice = 0; indice < sommets.size(); indice++) {
@@ -76,6 +98,12 @@ public class Graphe {
         return -1;
     }
 
+    /**
+     * Surcharge de la méthode getIndexOfSommet(Sommet sommet).
+     * @param x Coordonnée x du sommet.
+     * @param y Coordonnée y du sommet.
+     * @return Indice du sommet dans la liste des sommets du graphe.
+     */
     public int getIndexOfSommet(int x, int y) {
 
         int indice = 0;
@@ -91,6 +119,13 @@ public class Graphe {
         return -1;
     }
 
+    /**
+     * Retourne le voisinage d'un sommet.
+     * @param sommet Sommet dont on veut le voisinage.
+     * @param nb_lignes Nombre de lignes de la matrice d'adjacences.
+     * @param nb_colonnes Nombre de colonnes de la matrice d'adjacences.
+     * @return Liste des sommets voisins.
+     */
     public List<Sommet> voisinnage(Sommet sommet, int nb_lignes, int nb_colonnes) {
 
         List<Sommet> sommet_voisins = new ArrayList<>();
@@ -119,6 +154,12 @@ public class Graphe {
 
     }
 
+    /**
+     * Retourne le chemin le plus court entre deux sommets en utilisant l'algorithme de Dijkstra.
+     * @param depart Sommet de départ.
+     * @param destination Sommet d'arrivée.
+     * @return Liste des sommets du chemin le plus court.
+     */
     public List<Sommet> dijkstra(Sommet depart, Sommet destination) {
 
         Map<Sommet, Integer> distances = new HashMap<>();

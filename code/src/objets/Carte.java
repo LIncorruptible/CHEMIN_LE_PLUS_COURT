@@ -3,12 +3,46 @@ package objets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe représentant la carte du jeu.
+ */
 public class Carte {
+    private int[]
+            /**
+             * Coordonnées du point de départ.
+             */
+            depart,
+            /**
+             * Indice des cases obligatoires parmis les cases stratégiques.
+             */
+            cases_obligatoires;
+    private int[][]
+            /**
+             * Grille de la carte.
+             */
+            grille,
+            /**
+             * Coordonnées des cases d'intérêts et de leurs valeurs.
+             */
+            cases_interets,
+            /**
+             * Coordonnées des cases stratégiques.
+             */
+            cases_strategiques;
 
-    private int[] depart, cases_obligatoires;
-    private int[][] grille, cases_interets, cases_strategiques;
+    /**
+     * Graphe correspondant à la carte.
+     */
     private Graphe graphe;
 
+    /**
+     * Constructeur qui prend en paramètre les informations nécessaires pour créer une carte de jeu.
+     * @param depart Coordonnées du point de départ.
+     * @param cases_olbigatoires Indice des cases obligatoires parmis les cases stratégiques.
+     * @param grille Grille de la carte.
+     * @param cases_interets Coordonnées des cases d'intérêts et de leurs valeurs.
+     * @param cases_strategiques Coordonnées des cases stratégiques.
+     */
     public Carte(int[] depart, int[] cases_olbigatoires, int[][] grille, int[][] cases_interets, int[][] cases_strategiques) {
         this.depart = depart;
         this.cases_obligatoires = cases_olbigatoires;
@@ -21,54 +55,18 @@ public class Carte {
         System.out.print("[Terminé]\n");
     }
 
-    public int[] getDepart() {
-        return depart;
-    }
-
-    public void setDepart(int[] depart) {
-        this.depart = depart;
-    }
-
-    public int[] getCases_obligatoires() {
-        return cases_obligatoires;
-    }
-
-    public void setCases_obligatoires(int[] cases_obligatoires) {
-        this.cases_obligatoires = cases_obligatoires;
-    }
-
-    public int[][] getGrille() {
-        return grille;
-    }
-
-    public void setGrille(int[][] grille) {
-        this.grille = grille;
-    }
-
-    public int[][] getCases_interets() {
-        return cases_interets;
-    }
-
-    public void setCases_interets(int[][] cases_interets) {
-        this.cases_interets = cases_interets;
-    }
-
-    public int[][] getCases_strategiques() {
-        return cases_strategiques;
-    }
-
-    public void setCases_strategiques(int[][] cases_strategiques) {
-        this.cases_strategiques = cases_strategiques;
-    }
-
+    /**
+     * Cette méthode renvoie l'objet Graphe associé à l'objet Carte.
+     * @return L'objet Graphe associé.
+     */
     public Graphe getGraphe() {
         return graphe;
     }
 
-    public void setGraphe(Graphe graphe) {
-        this.graphe = graphe;
-    }
-
+    /**
+     * Cette méthode permet de récupérer la liste des sommets stratégiques présents sur la carte.
+     * @return La liste des sommets stratégiques.
+     */
     public List<Sommet> getSommetsStrategiques() {
         List<Sommet> sommets_strategiques = new ArrayList<>();
         for (int[] coord : cases_strategiques) {
@@ -80,6 +78,10 @@ public class Carte {
         return sommets_strategiques;
     }
 
+    /**
+     * Cette méthode permet de récupérer la liste des sommets d'intérêts présents sur la carte.
+     * @return La liste des sommets d'intérêts.
+     */
     public List<Sommet> getSommetsInterets() {
         List<Sommet> sommets_interets = new ArrayList<>();
         List<Sommet> sommets_graphe = graphe.getSommets();
@@ -91,10 +93,19 @@ public class Carte {
         return sommets_interets;
     }
 
+    /**
+     * Cette méthode permet de récupérer la liste des sommets obligatoires présents sur la carte.
+     * @return La liste des sommets obligatoires.
+     */
     public List<Sommet> getSommetsObligatoires() {
         return new ArrayList<>(getSommetsStrategiques().subList(0, cases_obligatoires.length));
     }
 
+    /**
+     * Indique par un booléen si le sommet est un stratégique.
+     * @param sommet Le sommet, à évaluer.
+     * @return vrai ou faux.
+     */
     public boolean isStrategique(Sommet sommet) {
 
         for(Sommet sommet_a_compare : getSommetsStrategiques()) {
@@ -106,6 +117,11 @@ public class Carte {
         return false;
     }
 
+    /**
+     * Indique par un booléen si le sommet est un obligatoire.
+     * @param sommet Le sommet, à évaluer.
+     * @return vrai ou faux.
+     */
     public boolean isObligatoire(Sommet sommet) {
         for(Sommet sommet_a_compare : getSommetsObligatoires()) {
             if(sommet_a_compare.getNom().equals(sommet.getNom())) {
@@ -116,6 +132,11 @@ public class Carte {
         return false;
     }
 
+    /**
+     * Indique par un booléen si le sommet est un intérêt.
+     * @param sommet Le sommet, à évaluer.
+     * @return vrai ou faux.
+     */
     public boolean isInteret(Sommet sommet) {
 
         for(Sommet sommet_a_compare : getSommetsInterets()) {
@@ -127,6 +148,11 @@ public class Carte {
         return false;
     }
 
+    /**
+     * Cette méthode permet de calculer le score d'un chemin.
+     * @param chemin Le chemin, à évaluer.
+     * @return vrai ou faux
+     */
     public int computeScoreChemin(List<Sommet> chemin) {
         int
                 score_strategique = 0,
@@ -155,6 +181,12 @@ public class Carte {
         return score_strategique + score_interet - score_passage;
     }
 
+    /**
+     * Cette méthode minimise le graphe associé à la carte selon les paramètres.
+     * @param interets Si on doit prendre en compte les sommets d'intérêts.
+     * @param strategies Si on doit prendre en compte les sommets stratégiques.
+     * @return Le graphe minimisé.
+     */
     public Graphe streamlineGraphe(boolean interets, boolean strategies) {
         List<Sommet> sommets_crees = new ArrayList<>();
         List<Sommet> sommets = (strategies ? getSommetsStrategiques() : getSommetsObligatoires());
@@ -201,6 +233,11 @@ public class Carte {
         return new Graphe(sommets_crees);
     }
 
+    /**
+     * Cette méthode développe le chemin passé en paramètre.
+     * @param chemin Le chemin, à développer.
+     * @return Le chemin développé.
+     */
     public List<Sommet> buildChemin(List<Sommet> chemin) {
 
         List<Sommet> chemin_developpe = new ArrayList<>();
@@ -239,6 +276,11 @@ public class Carte {
         return chemin_developpe;
     }
 
+    /**
+     * Cette méthode permet de parcourir le graphe minimisé pour trouver le chemin le plus court.
+     * @param graphe_minimise Le graphe minimisé.
+     * @return Le chemin, à développer le plus court.
+     */
     public List<Sommet> browseChemin(Graphe graphe_minimise) {
 
         List<Sommet> chemin = new ArrayList<>();
@@ -294,6 +336,10 @@ public class Carte {
         return buildChemin(chemin);
     }
 
+    /**
+     * Cette méthode calcul le tracé du chemin le plus court, mais qui rapporte le plus de points.
+     * @return Le chemin le plus court, mais qui rapporte le plus de points.
+     */
     public List<Sommet> traceMaxScoreChemin() {
 
         System.out.println("\n[Calcul du tracé]");
@@ -310,6 +356,10 @@ public class Carte {
         return browseChemin(graphe_minimise);
     }
 
+    /**
+     * Cette méthode calcul le tracé du chemin le plus court.
+     * @return Le chemin le plus court.
+     */
     public List<Sommet> traceMinDistChemin() {
 
         System.out.println("\n[Calcul du tracé]");
@@ -326,6 +376,12 @@ public class Carte {
         return browseChemin(graphe_minimise);
     }
 
+    /**
+     * Cette méthode calcul le tracé du chemin selon les paramètres.
+     * @param interets Si on prend en compte les points d'intérêts.
+     * @param strategies Si on prend en compte les points stratégiques.
+     * @return Le chemin le plus court.
+     */
     public List<Sommet> tracePersonalizedChemin(boolean interets, boolean strategies) {
 
         System.out.println("\n[Calcul du tracé]");

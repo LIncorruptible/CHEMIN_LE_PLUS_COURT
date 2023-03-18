@@ -2,39 +2,52 @@ package objets;
 
 import java.util.Objects;
 
+/**
+ * Classe représentant un arc.
+ */
 public class Arc {
 
-    private Sommet Depart, Arrivee;
+    private Sommet
+            /**
+             * Sommet de départ de l'arc.
+             */
+            Depart,
+            /**
+             * Sommet d'arrivée de l'arc.
+             */
+            Arrivee;
+
+    /**
+     * Poids de l'arc.
+     */
     private int poids;
 
+    /**
+     * Constructeur de la classe Arc avec tous les paramètres.
+     * @param depart Sommet de départ de l'arc.
+     * @param arrivee Sommet d'arrivée de l'arc.
+     * @param poids Poids de l'arc.
+     */
     public Arc(Sommet depart, Sommet arrivee, int poids) {
         Depart = depart;
         Arrivee = arrivee;
         this.poids = poids;
     }
 
-    public Sommet getDepart() {
-        return Depart;
-    }
-
-    public void setDepart(Sommet depart) {
-        Depart = depart;
-    }
-
+    /**
+     * Cette méthode permet de récupérer le sommet d'arrivée de l'arc.
+     * @return Sommet d'arrivée de l'arc.
+     */
     public Sommet getArrivee() {
         return Arrivee;
     }
 
-    public void setArrivee(Sommet arrivee) {
-        Arrivee = arrivee;
-    }
-
+    /**
+     * Cette méthode permet de récupérer le poids de l'arc.
+     * @return Poids de l'arc.
+     */
     public int getPoids() {
         return poids;
-    }
-
-    public void setPoids(int poids) {
-        this.poids = poids;
     }
 
     @Override

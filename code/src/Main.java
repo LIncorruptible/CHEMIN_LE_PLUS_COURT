@@ -7,8 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Classe principale du programme.
+ */
 public class Main {
 
+    /**
+     * Cette méthode affiche le nom de chaque sommet dans la liste, séparé par des flèches "->", pour afficher le chemin correspondant.
+     * @param chemin La liste de sommets à afficher.
+     */
     public static void afficherChemin(List<Sommet> chemin) {
 
         for(int i = 0; i < chemin.size() - 1; i++) {
@@ -19,6 +26,13 @@ public class Main {
         System.out.println();
     }
 
+    /**
+     * Cette méthode modifie ces paramètres en soustrayant 1 de certaines valeurs pour les adapter à une numérotation qui commence à 0 plutôt qu'à 1.
+     * @param matrice_interets La matrice des intérêts.
+     * @param matrice_strategies La matrice des stratégies.
+     * @param obligatoire Les sommets obligatoires.
+     * @param depart Le sommet de départ.
+     */
     public static void traduirePourLeCode(int[][] matrice_interets, int[][] matrice_strategies, int[] obligatoire, int[] depart) {
         for (int i = 0; i < matrice_strategies.length; i++) {
             matrice_strategies[i][0]--;
@@ -38,6 +52,12 @@ public class Main {
         depart[1]--;
     }
 
+    /**
+     * Cette méthode retourne une matrice d'entiers construite à partir du contenu du fichier situé au chemin "chemin_fichier".
+     * @param separateur Le séparateur utilisé dans le fichier.
+     * @param chemin_fichier Le chemin du fichier.
+     * @return La matrice d'entiers construite.
+     */
     public static int[][] importMatrice(String separateur, String chemin_fichier) {
 
         int[][] matrice = null;
@@ -73,6 +93,11 @@ public class Main {
         return matrice;
     }
 
+    /**
+     * Cette méthode retourne une instance de "Carte" construite à partir des données importées depuis les fichiers.
+     * @param repertoire_des_donnees Le chemin du répertoire contenant les fichiers.
+     * @return L'instance de "Carte" construite.
+     */
     public static Carte importerDonneesATravailler(String repertoire_des_donnees) {
 
         int[] depart = new int[2];
@@ -124,6 +149,11 @@ public class Main {
         return new Carte(depart, obligations, matrice_adjacences, matrice_interets, matrice_strategies);
     }
 
+    /**
+     * Cette méthode permet de créer un dataset à partir d'un chemin donné et de l'écrire dans un fichier spécifié.
+     * @param chemin Le chemin à partir duquel le dataset sera créé.
+     * @param chemin_fichier_sorti Le chemin du fichier dans lequel le dataset sera écrit.
+     */
     public static void dataset(List<Sommet> chemin, String chemin_fichier_sorti) {
 
         System.out.print("Création du dataset...");
