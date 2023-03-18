@@ -2,8 +2,10 @@ import objets.Carte;
 import objets.Graphe;
 import objets.Sommet;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
@@ -36,68 +38,146 @@ public class Main {
         depart[1]--;
     }
 
-    public static void main(String[] args) {
+    public static Carte importerDonneesATravailler(String repertoire_des_donnees) {
 
-        int I = -1;
+        int[] depart = new int[2];
 
-        int[][] matrice_adjacences = {
-                {4, 4, 5, 4, 4, 3, 2, 4, 2, 5, 1, 4, 3, 3, 1, 3, 2, 2, 2, 2},
-                {3, 4, 1, 3, 1, 4, 3, 2, 4, 3, 4, 2, 1, 5, 1, 4, 5, 4, 4, 1},
-                {2, 1, 3, 3, 1, 4, 5, 1, 3, 5, 3, 2, 2, 4, 3, 3, 4, 5, 1, 4},
-                {2, 4, I, 3, 2, I, I, I, I, I, 3, 2, 3, 4, 4, 4, 5, 5, 4, 4},
-                {2, 1, 4, 2, 4, I, 2, 3, 1, 5, 1, 1, 5, 3, 1, 1, 2, 5, 5, 4},
-                {3, 1, 5, 2, 5, I, 3, 1, 5, 1, 1, 3, 3, 5, 2, 4, 2, 4, 1, 5},
-                {5, 1, 4, 5, 5, I, 3, 3, 3, 3, 4, I, 1, 1, 3, I, 5, 4, 5, 4},
-                {2, 2, 1, 4, 2, I, 3, 3, 1, 4, 5, I, 4, 1, 2, I, 1, 3, 2, 4},
-                {2, 5, 4, 5, 2, I, 5, 2, 4, I, I, I, 5, 1, 3, I, I, I, I, 3},
-                {1, 4, 1, 3, 1, I, I, I, 3, 5, 1, 4, 5, 4, 3, I, 5, 2, 3, 4},
-                {3, 3, 3, 1, 3, 4, 1, I, 1, 3, 3, 4, 5, 1, 5, I, 5, 1, 3, 4},
-                {2, 2, 3, 2, 1, 5, 3, I, 5, 5, 2, 5, 5, 5, 1, 5, 4, 2, 3, 4},
-                {2, 5, 1, 3, 5, 1, 4, I, 3, 2, 5, 2, 4, 1, 2, 5, 1, 4, 2, 5},
-                {1, 4, 4, 3, 3, 1, 2, I, 1, 2, 3, 1, I, I, I, 4, 3, 4, 4, 1},
-                {1, 5, 3, 2, 3, 3, 3, I, 4, 5, 2, 3, 1, 2, 4, 2, 5, 3, 1, 2},
-                {3, 1, 1, 4, I, I, I, I, 3, 4, 3, 3, 2, 3, 3, 3, 2, 4, 4, 1},
-                {5, 2, 5, 2, 2, 2, 5, 4, 2, 2, 5, 2, 2, 4, 5, 1, 3, 4, 3, 5},
-                {2, 1, 5, 2, 1, 4, 3, 5, 2, 1, 5, 5, 3, 3, 5, 4, 3, 3, 4, 1},
-                {2, 1, 5, 2, 5, 1, 4, 3, 3, 1, 3, 5, 1, 1, 1, 1, 1, 4, 3, 1},
-                {2, 2, 1, 5, 2, 3, 4, 3, 1, 2, 3, 1, 2, 3, 3, 2, 5, 5, 4, 1}
-        };
+        Scanner sc = null;
 
-        int[][] cas_strategiques = {
-                {2, 2},
-                {2, 12},
-                {6, 13},
-                {8, 6},
-                {14, 17},
-                {15, 3},
-                {19, 2}
-        };
+        try {
+            sc = new Scanner(new File(repertoire_des_donnees + "/depart.txt"));
 
-        int[][] cases_interets = {
-                {2, 7, 18},
-                {2, 19, 12},
-                {7, 2, 13},
-                {11, 14, 9},
-                {13, 5, 25},
-                {18, 6, 8},
-                {19, 17, 5}
-        };
+            sc.useDelimiter("_");
 
-        int[] cases_obligatoires = {1, 3, 6, 7};
+            depart[0] = sc.nextInt();
+            depart[1] = sc.nextInt();
 
-        int[] depart = {11, 19};
+            sc.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
-        Graphe g = new Graphe(matrice_adjacences);
+        int[] obligations = new int[0];
 
-        System.out.println(g);
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(repertoire_des_donnees + "/obligatoire.txt"));
+            String line = br.readLine();
+            String[] ligne = line.split("_");
+            obligations = new int[ligne.length];
+
+            for(int i = 0; i < ligne.length; i++) {
+                obligations[i] = Integer.parseInt(ligne[i]);
+            }
+            br.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        int[][] matrice_adjacences = new int[0][0];
+
+        sc = null;
+        try {
+            sc = new Scanner(new File(repertoire_des_donnees + "/matrice.txt"));
+            sc.useDelimiter("\t");
+            int n = sc.nextInt();
+            matrice_adjacences = new int[n][n];
+
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    matrice_adjacences[i][j] = sc.nextInt();
+                }
+            }
+            sc.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        int[][] matrice_interets = new int[0][0];
+
+        sc = null;
+        try {
+            sc = new Scanner(new File(repertoire_des_donnees + "/matrice_interet.txt"));
+            sc.useDelimiter("_");
+            int n = sc.nextInt();
+            matrice_interets = new int[n][n];
+
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    matrice_interets[i][j] = sc.nextInt();
+                }
+            }
+            sc.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        int[][] matrice_strategies = new int[0][0];
+
+        sc = null;
+        try {
+            sc = new Scanner(new File(repertoire_des_donnees + "/matrice_strategie.txt"));
+            sc.useDelimiter("_");
+            int n = sc.nextInt();
+            matrice_strategies = new int[n][n];
+
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    matrice_strategies[i][j] = sc.nextInt();
+                }
+            }
+            sc.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.print("Traduction pour le code ...");
-        traduirePourLeCode(cases_interets, cas_strategiques, cases_obligatoires, depart);
+            traduirePourLeCode(matrice_interets, matrice_strategies, obligations, depart);
         System.out.print("[Terminé]\n");
 
+        return new Carte(depart, obligations, matrice_adjacences, matrice_interets, matrice_strategies);
+
+    }
+
+    public static void dataset(List<Sommet> chemin, String chemin_fichier_sorti) {
+
+        System.out.print("Création du dataset...");
+        int[][] dataset = new int[chemin.size()][2];
+
+        for(int indice = 0; indice < chemin.size(); indice++) {
+            dataset[indice][0] = chemin.get(indice).getX() + 1;
+            dataset[indice][1] = chemin.get(indice).getY() + 1;
+        }
+
+        System.out.print("[Terminé]\n");
+
+        System.out.print("Ecriture du dataset à l'adresse suivante : " + chemin_fichier_sorti + "...");
+        try {
+            File fichier = new File(chemin_fichier_sorti);
+            fichier.createNewFile();
+
+            FileWriter writer = new FileWriter(fichier);
+
+            for(int[] ligne : dataset) {
+                writer.write(ligne[0] + ";" + ligne[1] + "\n");
+            }
+
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.print("[Terminé]\n");
+    }
+
+    public static void main(String[] args) {
+
+        String repertoire_courant = System.getProperty("user.dir");
+
         System.out.println("\n[Création de la carte]");
-        Carte c = new Carte(depart, cases_obligatoires, matrice_adjacences, cases_interets, cas_strategiques);
-        System.out.println("\t" + c.getGraphe());
+            Carte c = importerDonneesATravailler(repertoire_courant + "/IO/in");
+            System.out.println("\t" + c.getGraphe());
         System.out.println("[Terminée]");
 
         List<Sommet> chemin_score_max = new ArrayList<>(c.traceMaxScoreChemin());
@@ -105,19 +185,27 @@ public class Main {
 
         List<Sommet> chemin_strategique = new ArrayList<>(c.tracePersonalizedChemin(false, true));
 
+        String repertoire_dataset = repertoire_courant + "/IO/out";
+
         System.out.println("\n[Chemin obtenu de score max]");
-        System.out.print("\t");
-        afficherChemin(chemin_score_max);
+            System.out.print("\t");
+            afficherChemin(chemin_score_max);
         System.out.println("[Fin]");
+
+        dataset(chemin_score_max, repertoire_dataset + "/dataset_chemin_score_max.txt");
 
         System.out.println("\n[Chemin obtenu de dist min]");
-        System.out.print("\t");
-        afficherChemin(chemin_dist_min);
+            System.out.print("\t");
+            afficherChemin(chemin_dist_min);
         System.out.println("[Fin]");
 
+        dataset(chemin_dist_min, repertoire_dataset + "/dataset_chemin_dist_min.txt");
+
         System.out.println("\n[Chemin stratégique]");
-        System.out.print("\t");
-        afficherChemin(chemin_strategique);
+            System.out.print("\t");
+            afficherChemin(chemin_strategique);
         System.out.println("[Fin]");
+
+        dataset(chemin_strategique, repertoire_dataset + "/dataset_chemin_strategique.txt");
     }
 }
