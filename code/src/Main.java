@@ -38,6 +38,41 @@ public class Main {
         depart[1]--;
     }
 
+    public static int[][] importMatrice(String separateur, String chemin_fichier) {
+
+        int[][] matrice = null;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(chemin_fichier))) {
+            String ligne;
+            int nbLignes = 0;
+            while ((ligne = br.readLine()) != null) {
+                nbLignes++;
+            }
+            matrice = new int[nbLignes][];
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(chemin_fichier))) {
+            String ligne;
+            int i = 0;
+            while ((ligne = br.readLine()) != null) {
+                String[] tab = ligne.split(separateur);
+                int[] ligneMatrice = new int[tab.length];
+                for (int j = 0; j < tab.length; j++) {
+                    ligneMatrice[j] = Integer.parseInt(tab[j]);
+                }
+                matrice[i++] = ligneMatrice;
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return matrice;
+    }
+
     public static Carte importerDonneesATravailler(String repertoire_des_donnees) {
 
         int[] depart = new int[2];
@@ -76,69 +111,17 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        int[][] matrice_adjacences = new int[0][0];
+        int[][] matrice_adjacences = importMatrice("\t", repertoire_des_donnees + "/matrice.txt");
 
-        sc = null;
-        try {
-            sc = new Scanner(new File(repertoire_des_donnees + "/matrice.txt"));
-            sc.useDelimiter("\t");
-            int n = sc.nextInt();
-            matrice_adjacences = new int[n][n];
+        int[][] matrice_interets = importMatrice("_", repertoire_des_donnees + "/matrice_interet.txt");
 
-            for(int i = 0; i < n; i++) {
-                for(int j = 0; j < n; j++) {
-                    matrice_adjacences[i][j] = sc.nextInt();
-                }
-            }
-            sc.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        int[][] matrice_interets = new int[0][0];
-
-        sc = null;
-        try {
-            sc = new Scanner(new File(repertoire_des_donnees + "/matrice_interet.txt"));
-            sc.useDelimiter("_");
-            int n = sc.nextInt();
-            matrice_interets = new int[n][n];
-
-            for(int i = 0; i < n; i++) {
-                for(int j = 0; j < n; j++) {
-                    matrice_interets[i][j] = sc.nextInt();
-                }
-            }
-            sc.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        int[][] matrice_strategies = new int[0][0];
-
-        sc = null;
-        try {
-            sc = new Scanner(new File(repertoire_des_donnees + "/matrice_strategie.txt"));
-            sc.useDelimiter("_");
-            int n = sc.nextInt();
-            matrice_strategies = new int[n][n];
-
-            for(int i = 0; i < n; i++) {
-                for(int j = 0; j < n; j++) {
-                    matrice_strategies[i][j] = sc.nextInt();
-                }
-            }
-            sc.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        int[][] matrice_strategies = importMatrice("_", repertoire_des_donnees + "/matrice_strategique.txt");
 
         System.out.print("Traduction pour le code ...");
             traduirePourLeCode(matrice_interets, matrice_strategies, obligations, depart);
         System.out.print("[Terminé]\n");
 
         return new Carte(depart, obligations, matrice_adjacences, matrice_interets, matrice_strategies);
-
     }
 
     public static void dataset(List<Sommet> chemin, String chemin_fichier_sorti) {
