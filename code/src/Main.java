@@ -5,6 +5,7 @@ import objets.Sommet;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -184,41 +185,34 @@ public class Main {
         System.out.print("[Terminé]\n");
     }
 
-    public static void main(String[] args) {
-
+    public static void VERSION_A() {
         String repertoire_courant = System.getProperty("user.dir");
 
         System.out.println("\n[Création de la carte]");
-            Carte c = importerDonneesATravailler(repertoire_courant + "/IO/in");
-            System.out.println("\t" + c.getGraphe());
+        Carte c = importerDonneesATravailler(repertoire_courant + "/IO/in");
+
+        System.out.println("\t" + c.getGraphe());
         System.out.println("[Terminée]");
 
-        List<Sommet> chemin_score_max = new ArrayList<>(c.traceMaxScoreChemin());
-        List<Sommet> chemin_dist_min = new ArrayList<>(c.traceMinDistChemin());
+        List<Sommet> resultat = c.traceChemin();
 
-        List<Sommet> chemin_strategique = new ArrayList<>(c.tracePersonalizedChemin(false, true));
+        System.out.println("\n[Chemin obtenu]");
+        System.out.print("\t");
+        afficherChemin(resultat);
+        System.out.println("[Fin]");
+
+        List<Sommet> chemin = c.buildChemin(resultat);
+
+        System.out.println("\n[Calcul du score]");
+        System.out.println("\tScore : " + c.computeScoreChemin(chemin));
+        System.out.println("[Terminé]");
 
         String repertoire_dataset = repertoire_courant + "/IO/out";
 
-        System.out.println("\n[Chemin obtenu de score max]");
-            System.out.print("\t");
-            afficherChemin(chemin_score_max);
-        System.out.println("[Fin]");
+        dataset(chemin, repertoire_dataset + "/dataset_chemin.txt");
+    }
 
-        dataset(chemin_score_max, repertoire_dataset + "/dataset_chemin_score_max.txt");
-
-        System.out.println("\n[Chemin obtenu de dist min]");
-            System.out.print("\t");
-            afficherChemin(chemin_dist_min);
-        System.out.println("[Fin]");
-
-        dataset(chemin_dist_min, repertoire_dataset + "/dataset_chemin_dist_min.txt");
-
-        System.out.println("\n[Chemin stratégique]");
-            System.out.print("\t");
-            afficherChemin(chemin_strategique);
-        System.out.println("[Fin]");
-
-        dataset(chemin_strategique, repertoire_dataset + "/dataset_chemin_strategique.txt");
+    public static void main(String[] args) {
+        VERSION_A();
     }
 }

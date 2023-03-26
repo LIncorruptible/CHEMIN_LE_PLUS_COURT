@@ -40,7 +40,7 @@ public class Sommet {
     /**
      * Indique si le sommet est un obstacle.
      */
-    public boolean isUnObtascle;
+    public boolean isUnObstacle;
 
     /**
      * Constructeur de la classe Sommet avec tous les paramètres.
@@ -50,16 +50,16 @@ public class Sommet {
      * @param predecesseurs Liste des prédécesseurs du sommet.
      * @param successeurs Liste des successeurs du sommet.
      * @param arcs Liste des arcs du sommet.
-     * @param isUnObtascle Indique si le sommet est un obstacle.
+     * @param isUnObstacle Indique si le sommet est un obstacle.
      */
-    public Sommet(String nom, int x, int y, List<Sommet> predecesseurs, List<Sommet> successeurs, List<Arc> arcs, boolean isUnObtascle) {
+    public Sommet(String nom, int x, int y, List<Sommet> predecesseurs, List<Sommet> successeurs, List<Arc> arcs, boolean isUnObstacle) {
         this.nom = nom;
         this.x = x;
         this.y = y;
         this.predecesseurs = predecesseurs;
         this.successeurs = successeurs;
         this.arcs = arcs;
-        this.isUnObtascle = isUnObtascle;
+        this.isUnObstacle = isUnObstacle;
     }
 
     /**
@@ -75,10 +75,10 @@ public class Sommet {
      * Surcharge du constructeur de la classe Sommet.
      * @param x Coordonnée x du sommet.
      * @param y Coordonnée y du sommet.
-     * @param isUnObtascle Indique si le sommet est un obstacle.
+     * @param isUnObstacle Indique si le sommet est un obstacle.
      */
-    public Sommet(int x, int y, boolean isUnObtascle) {
-        this(( (x + 1) + "_" + (y + 1) ), x, y, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), isUnObtascle);
+    public Sommet(int x, int y, boolean isUnObstacle) {
+        this(( (x + 1) + "_" + (y + 1) ), x, y, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), isUnObstacle);
     }
 
     /**
@@ -118,15 +118,20 @@ public class Sommet {
      * @return true si le sommet est un obstacle, false sinon.
      */
     public boolean isUnObstacle() {
-        return isUnObtascle;
+        return isUnObstacle;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Sommet sommet)) return false;
-        return x == sommet.x && y == sommet.y && isUnObtascle == sommet.isUnObtascle && Objects.equals(predecesseurs, sommet.predecesseurs) && Objects.equals(successeurs, sommet.successeurs) && Objects.equals(arcs, sommet.arcs);
+        if (!(o instanceof Sommet)) return false;
+        Sommet sommet = (Sommet) o;
+        return x == sommet.x && y == sommet.y && isUnObstacle == sommet.isUnObstacle &&
+                Objects.equals(predecesseurs.hashCode(), sommet.predecesseurs.hashCode()) &&
+                Objects.equals(successeurs.hashCode(), sommet.successeurs.hashCode()) &&
+                Objects.equals(arcs.hashCode(), sommet.arcs.hashCode());
     }
+
 
     @Override
     public int hashCode() {
@@ -137,11 +142,7 @@ public class Sommet {
     public String toString() {
         return "Sommet{" +
                 "x=" + x +
-                ", y=" + y +
-                ", predecesseurs=" + predecesseurs +
-                ", successeurs=" + successeurs +
-                ", arcs=" + arcs +
-                ", isUnObtascle=" + isUnObtascle +
-                '}';
+                ", y=" + y + " possède " + arcs.size() + " arcs" + "." +
+                ((isUnObstacle == true) ? " C'est un obstacle." : "");
     }
 }

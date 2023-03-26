@@ -36,7 +36,7 @@ public class Graphe {
                         new Sommet(
                                 colonne,
                                 ligne,
-                                (matrice_adjacences[colonne][ligne] < 0) ? true : false)
+                                (matrice_adjacences[ligne][colonne] <= 0) ? true : false)
                 );
             }
         }
@@ -50,7 +50,7 @@ public class Graphe {
 
             for(Sommet sommet_voisin : voisins) {
 
-                int poids_tmp = matrice_adjacences[sommet_voisin.getX()][sommet_voisin.getY()];
+                int poids_tmp = matrice_adjacences[sommet_voisin.getY()][sommet_voisin.getX()];
 
                 int poids = (poids_tmp >= 0) ? poids_tmp : Integer.MAX_VALUE; // Gérer les obstacles -1 par l'équivalent "infinie"
 

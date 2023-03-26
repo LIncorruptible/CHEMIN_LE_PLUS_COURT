@@ -53,7 +53,8 @@ public class Arc {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Arc arc)) return false;
+        if (!(o instanceof Arc)) return false;
+        Arc arc = (Arc) o;
         return poids == arc.poids && Objects.equals(Depart, arc.Depart) && Objects.equals(Arrivee, arc.Arrivee);
     }
 
