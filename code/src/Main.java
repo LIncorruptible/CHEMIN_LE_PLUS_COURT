@@ -118,7 +118,7 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        int[] obligations = new int[0];
+        int[] obligations = new int[0]; // ok
 
         BufferedReader br = null;
         try {
