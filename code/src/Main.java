@@ -3,6 +3,7 @@ import objets.Graphe;
 import objets.Sommet;
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,7 @@ public class Main {
         try {
             sc = new Scanner(new File(repertoire_des_donnees + "/depart.txt"));
 
-            sc.useDelimiter("_");
+            sc.useDelimiter(",");
 
             depart[0] = sc.nextInt();
             depart[1] = sc.nextInt();
@@ -118,13 +119,13 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        int[] obligations = new int[0]; // ok
+        int[] obligations = new int[0];
 
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(repertoire_des_donnees + "/obligatoire.txt"));
             String line = br.readLine();
-            String[] ligne = line.split("_");
+            String[] ligne = line.split(",");
             obligations = new int[ligne.length];
 
             for(int i = 0; i < ligne.length; i++) {
@@ -137,11 +138,11 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        int[][] matrice_adjacences = importMatrice("\t", repertoire_des_donnees + "/matrice.txt");
+        int[][] matrice_adjacences = importMatrice(",", repertoire_des_donnees + "/matrice.txt");
 
-        int[][] matrice_interets = importMatrice("_", repertoire_des_donnees + "/matrice_interet.txt");
+        int[][] matrice_interets = importMatrice(",", repertoire_des_donnees + "/matrice_interet.txt");
 
-        int[][] matrice_strategies = importMatrice("_", repertoire_des_donnees + "/matrice_strategique.txt");
+        int[][] matrice_strategies = importMatrice(",", repertoire_des_donnees + "/matrice_strategique.txt");
 
         System.out.print("Traduction pour le code ...");
             traduirePourLeCode(matrice_interets, matrice_strategies, obligations, depart);
@@ -185,10 +186,11 @@ public class Main {
         System.out.print("[Terminé]\n");
     }
 
-    public static void VERSION_A() {
+    public static void resolutionDuProbleme() {
         String repertoire_courant = System.getProperty("user.dir");
 
         System.out.println("\n[Création de la carte]");
+        System.out.print("\t");
         Carte c = importerDonneesATravailler(repertoire_courant + "/IO/in");
 
         System.out.println("\t" + c.getGraphe());
@@ -196,7 +198,7 @@ public class Main {
 
         List<Sommet> resultat = c.traceChemin();
 
-        System.out.println("\n[Chemin obtenu]");
+        System.out.println("\n[Chemin simplifié obtenu]");
         System.out.print("\t");
         afficherChemin(resultat);
         System.out.println("[Fin]");
@@ -207,12 +209,19 @@ public class Main {
         System.out.println("\tScore : " + c.computeScoreChemin(chemin));
         System.out.println("[Terminé]");
 
+        System.out.println();
+
         String repertoire_dataset = repertoire_courant + "/IO/out";
 
         dataset(chemin, repertoire_dataset + "/dataset_chemin.txt");
     }
 
     public static void main(String[] args) {
-        VERSION_A();
+
+        long debut = System.currentTimeMillis();
+
+        resolutionDuProbleme();
+
+        System.out.println("\nTemps d'exécution : " + (System.currentTimeMillis() - debut) + "ms");
     }
 }

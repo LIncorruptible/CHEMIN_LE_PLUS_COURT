@@ -233,7 +233,7 @@ public class Carte {
 
     public Graphe streamlineGraphe(List<Sommet> sommets, Graphe graphe) {
 
-        System.out.println("Streamlining graphe...");
+        System.out.println("[Minimisation du graphe]");
 
         List<Sommet> sommets_crees = new ArrayList<>();
 
@@ -291,7 +291,7 @@ public class Carte {
         System.out.println("\t\t- Nombre de sommets = " + nb_sommets);
         System.out.println("\t\t- Nombre d'arcs = " + nb_arcs);
 
-        System.out.println("Graphe streamlined.");
+        System.out.println("[Terminé]");
 
         return new Graphe(sommets_crees);
     }
@@ -304,7 +304,7 @@ public class Carte {
 
         List<Sommet> sommets = new ArrayList<>();
 
-        System.out.println("Ajout sommet de départ : " + getDepart().getNom());
+        System.out.print("Sommet de départ : " + getDepart().getNom());
         sommets.add(
                 new Sommet(
                         getDepart().getX(),
@@ -312,8 +312,9 @@ public class Carte {
                         getDepart().isUnObstacle()
                 )
         );
+        System.out.println();
 
-        System.out.println("Ajout sommets obligatoires : ");
+        System.out.print("Sommets obligatoires : ");
         for(Sommet sommet : getSommetsObligatoires()) {
             System.out.print(sommet.getNom() + "  ");
             sommets.add(
@@ -326,7 +327,7 @@ public class Carte {
         }
         System.out.println();
 
-        System.out.println("Ajout sommets intérêts : ");
+        System.out.print("Sommets d'intérêts : ");
         for(Sommet sommet : getSommetsInterets()) {
             System.out.print(sommet.getNom() + "  ");
             sommets.add(
@@ -490,11 +491,7 @@ public class Carte {
 
         int score_chemin_courant = computeScoreChemin(chemin_courant);
 
-        if(score_chemin_courant > score_courant) {
-            return chemin_courant;
-        } else {
-            return chemin;
-        }
+        return (score_chemin_courant > score_courant) ? chemin_courant : chemin;
     }
 
     public List<Sommet> opitmizeChemin(List<Sommet> chemin, Graphe graphe) {
