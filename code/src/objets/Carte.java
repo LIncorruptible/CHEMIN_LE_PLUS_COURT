@@ -1,9 +1,7 @@
 package objets;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Classe représentant la carte du jeu.
@@ -166,71 +164,23 @@ public class Carte {
      * @param chemin Le chemin, à évaluer.
      * @return vrai ou faux
      */
-    public int computeScoreChemin(List<Sommet> chemin) {
-
-        int
-                score_strategique = 0,
-                score_interet = 0,
-                score_passage = 0;
-
-        for(int i = 1; i < chemin.size(); i++) {
-            if(isStrategique(chemin.get(i))) {
-                score_strategique += 30;
-            } else if (isInteret(chemin.get(i))) {
-                for (int[] ligne : cases_interets) {
-                    if (ligne[0] == chemin.get(i).getX() && ligne[1] == chemin.get(i).getY()) {
-                        score_interet += ligne[2];
-                        break;
-                    }
-                }
-            } else {
-                score_passage += grille[chemin.get(i).getX()][chemin.get(i).getY()];
-            }
-        }
-
-        return (score_strategique + score_interet - score_passage);
-    }
-
-    public int maxOf(int[][] matrice) {
-        int max = 0;
-        for(int ligne = 0; ligne < matrice.length; ligne++) {
-            for(int colonne = 0; colonne < matrice[ligne].length; colonne++) {
-                if(matrice[ligne][colonne] > max) {
-                    max = matrice[ligne][colonne];
-                }
-            }
-        }
-        return max;
-    }
-
     public int computeCoutChemin(List<Sommet> chemin, Graphe graphe) {
 
         int cout = 0;
 
         for(int i = 0; i < chemin.size() - 1; i++) {
-
-            Sommet A = graphe.getSommets().get(
-                    graphe.getIndexOfSommet(chemin.get(i).getX(), chemin.get(i).getY())
-            );
-
-            Sommet B = graphe.getSommets().get(
-                    graphe.getIndexOfSommet(chemin.get(i + 1).getX(), chemin.get(i + 1).getY())
-            );
-
-            for(Arc arc : A.getArcs()) {
-
-                if(arc.getArrivee().getNom().equals(B.getNom())) {
-
-                    cout += arc.getPoids();
-
-                    break;
-                }
-            }
+            cout += graphe.coutArc(chemin.get(i), chemin.get(i + 1));
         }
 
         return cout;
     }
 
+    /**
+     * Cette méthode minimise le graphe en ne gardant que les sommets spécifiés, le reste est calculé par l'algorithme de Dijkstra.
+     * @param sommets Les sommets à garder.
+     * @param graphe Le graphe à minimiser.
+     * @return Le graphe minimisé.
+     */
     public Graphe streamlineGraphe(List<Sommet> sommets, Graphe graphe) {
 
         System.out.println("[Minimisation du graphe]");
@@ -273,6 +223,8 @@ public class Carte {
                                 sommet,
                                 cout
                         ));
+                        sommet.addPredecesseur(sommet_en_cours);
+                        sommet_en_cours.addSuccesseurs(sommet);
                     }
                 }
             }
@@ -296,308 +248,123 @@ public class Carte {
         return new Graphe(sommets_crees);
     }
 
-    public List<Sommet> traceChemin() {
+    public List<List<Sommet>> findAllPaths(Sommet depart, Sommet arrivee, Graphe graphe) {
+        List<List<Sommet>> chemins = new ArrayList<>();
+        List<Sommet> cheminCourant = new ArrayList<>();
+        cheminCourant.add(depart);
+        findAllPathsUtil(arrivee, graphe, cheminCourant, chemins);
+        return chemins;
+    }
 
-        // Minimisation du graphe général
+    private void findAllPathsUtil(Sommet arrivee, Graphe graphe, List<Sommet> cheminCourant, List<List<Sommet>> chemins) {
+        Sommet sommetCourant = cheminCourant.get(cheminCourant.size() - 1);
 
-        System.out.println("\n");
-
-        List<Sommet> sommets = new ArrayList<>();
-
-        System.out.print("Sommet de départ : " + getDepart().getNom());
-        sommets.add(
-                new Sommet(
-                        getDepart().getX(),
-                        getDepart().getY(),
-                        getDepart().isUnObstacle()
-                )
-        );
-        System.out.println();
-
-        System.out.print("Sommets obligatoires : ");
-        for(Sommet sommet : getSommetsObligatoires()) {
-            System.out.print(sommet.getNom() + "  ");
-            sommets.add(
-                    new Sommet(
-                            sommet.getX(),
-                            sommet.getY(),
-                            sommet.isUnObstacle()
-                    )
-            );
-        }
-        System.out.println();
-
-        System.out.print("Sommets d'intérêts : ");
-        for(Sommet sommet : getSommetsInterets()) {
-            System.out.print(sommet.getNom() + "  ");
-            sommets.add(
-                    new Sommet(
-                            sommet.getX(),
-                            sommet.getY(),
-                            sommet.isUnObstacle()
-                    )
-            );
-        }
-        System.out.println("\n");
-
-        Graphe graphe_courant = streamlineGraphe(sommets, graphe);
-
-        Sommet sommet_courant = graphe_courant.getSommets().get(
-                graphe_courant.getIndexOfSommet(getDepart())
-        );
-
-        List<Sommet> sommet_a_visiter = new ArrayList<>();
-
-        for(Sommet sommet : graphe_courant.getSommets()) {
-            if(isObligatoire(sommet)) {
-                sommet_a_visiter.add(sommet);
-            }
-        }
-
-        List<Sommet> sommets_visites = new ArrayList<>();
-        List<Sommet> chemin = new ArrayList<>();
-
-        chemin.add(sommet_courant);
-
-        while(!sommet_a_visiter.isEmpty()) {
-
-            Map<List<Sommet>, Integer> distances = new HashMap<>();
-
-            for(Sommet sommet : sommet_a_visiter) {
-
-                List<Sommet> dijkstra = graphe_courant.dijkstra(sommet_courant, sommet);
-                int cout = computeCoutChemin(dijkstra, graphe_courant);
-
-                distances.put(dijkstra, cout);
-            }
-
-            List<Sommet> chemin_courant = null;
-            int cout_courant = Integer.MAX_VALUE;
-
-            for(Map.Entry<List<Sommet>, Integer> entry : distances.entrySet()) {
-                if(entry.getValue() < cout_courant) {
-                    chemin_courant = entry.getKey();
-                    cout_courant = entry.getValue();
+        if (sommetCourant.equals(arrivee)) {
+            chemins.add(new ArrayList<>(cheminCourant));
+        } else {
+            for (Arc arc : sommetCourant.getArcs()) {
+                Sommet sommetVoisin = arc.getArrivee();
+                if (!cheminCourant.contains(sommetVoisin)) {
+                    cheminCourant.add(sommetVoisin);
+                    findAllPathsUtil(arrivee, graphe, cheminCourant, chemins);
+                    cheminCourant.remove(cheminCourant.size() - 1);
                 }
             }
-
-            for(int i = 1; i < chemin_courant.size(); i++) {
-                chemin.add(chemin_courant.get(i));
-            }
-
-            sommet_courant = chemin.get(chemin.size() - 1);
-            sommet_a_visiter.remove(sommet_courant);
-            sommets_visites.add(sommet_courant);
         }
-
-        chemin = opitmizeChemin(chemin, graphe_courant);
-
-        List<Sommet> sommets_interets = new ArrayList<>();
-
-        for(Sommet sommet : graphe_courant.getSommets()) {
-            if(isInteret(sommet)) {
-                sommets_interets.add(sommet);
-            }
-        }
-
-        List<Sommet> sommets_interets_restants = new ArrayList<>();
-
-        for(Sommet sommet_interet : sommets_interets) {
-            if(!chemin.contains(sommet_interet)) {
-                sommets_interets_restants.add(sommet_interet);
-            }
-        }
-
-        for(Sommet sommet_interet : sommets_interets_restants) {
-            List<Sommet> chemin_tmp = placeSommetRestant(sommet_interet, chemin, graphe);
-
-            int cout_tmp = computeCoutChemin(chemin_tmp, graphe_courant);
-            int cout_courant = computeCoutChemin(chemin, graphe_courant);
-
-            if(cout_tmp <= cout_courant) {
-                chemin = chemin_tmp;
-            }
-        }
-
-        return chemin;
     }
+    public int computePathScore(List<Sommet> chemin, Graphe graphe) {
+        int score = 0;
+        for (int i = 0; i < chemin.size() - 1; i++) {
 
-    public List<Sommet> placeSommetRestant(Sommet sommet, List<Sommet> chemin, Graphe graphe) {
+            Sommet arrivee = chemin.get(i + 1);
 
-        int score_courant = computeScoreChemin(chemin);
+            // On retire le coût de l'arc
+            score -= graphe.coutArc(chemin.get(i), arrivee);
 
-        // Recherche du sommet dans le chemin, le plus proche du sommet interet
-        Sommet sommet_proche_A = null;
-        int distance_courante = Integer.MAX_VALUE;
-
-        for(Sommet sommet_chemin : chemin) {
-            int distance = computeCoutChemin(
-                    graphe.dijkstra(
-                            graphe.getSommets().get(
-                                    graphe.getIndexOfSommet(sommet_chemin)
-                            ),
-                            graphe.getSommets().get(
-                                    graphe.getIndexOfSommet(sommet)
-                            )
-                    ), graphe
-            );
-            if(distance < distance_courante) {
-                sommet_proche_A = sommet_chemin;
-                distance_courante = distance;
-            }
-        }
-
-        // Recherche du second sommet dans le chemin le plus proche du sommet interet
-        Sommet sommet_proche_B = null;
-        distance_courante = Integer.MAX_VALUE;
-
-        for(Sommet sommet_chemin : chemin) {
-            int distance = computeCoutChemin(
-                    graphe.dijkstra(
-                            graphe.getSommets().get(
-                                    graphe.getIndexOfSommet(sommet_chemin)
-                            ),
-                            graphe.getSommets().get(
-                                    graphe.getIndexOfSommet(sommet)
-                            )
-                    ), graphe
-            );
-            if(distance < distance_courante && sommet_chemin != sommet_proche_A) {
-                sommet_proche_B = sommet_chemin;
-                distance_courante = distance;
-            }
-        }
-
-        // A précède t-il B ?
-        boolean a_precede_b = false;
-
-        for(int i = 0; i < chemin.size(); i++) {
-            if(chemin.get(i) == sommet_proche_A) {
-                a_precede_b = true;
-            }
-            if(chemin.get(i) == sommet_proche_B) {
-                a_precede_b = false;
-            }
-        }
-
-        // Reconstruire le chemin en ajoutant le sommet interet entre les deux sommets les plus proches
-        List<Sommet> chemin_courant = new ArrayList<>();
-        for(Sommet sommet_chemin : chemin) {
-            chemin_courant.add(sommet_chemin);
-            if(sommet_chemin == ((a_precede_b) ? sommet_proche_A : sommet_proche_B)) {
-                chemin_courant.add(sommet);
-            }
-        }
-
-        int score_chemin_courant = computeScoreChemin(chemin_courant);
-
-        return (score_chemin_courant > score_courant) ? chemin_courant : chemin;
-    }
-
-    public List<Sommet> opitmizeChemin(List<Sommet> chemin, Graphe graphe) {
-
-        List<Sommet> chemin_optimal = new ArrayList<>();
-
-        for(int i = 0; i < chemin.size() - 1; i++) {
-
-            // Chemin à peut-être optimiser
-            List<Sommet> chemin_courant = new ArrayList<>();
-            chemin_courant.add(chemin.get(i));
-            chemin_courant.add(chemin.get(i + 1));
-
-            int score_courant = computeCoutChemin(chemin_courant, graphe);
-
-            Map<List<Sommet>, Integer> distances = new HashMap<>();
-
-            distances.put(chemin_courant, score_courant);
-
-            for(Sommet sommet : graphe.getSommets()) {
-                if(isInteret(sommet) && !chemin_optimal.contains(sommet)) {
-                    // Chemin peut être optimisé
-                    List<Sommet> chemin_tmp = new ArrayList<>();
-                    chemin_tmp.add(chemin.get(i));
-                    chemin_tmp.add(sommet);
-                    chemin_tmp.add(chemin.get(i + 1));
-
-                    // On récupère la valeur case intérêt
-                    int cellule = 0;
-
-                    for(int ligne[] : cases_interets) {
-                        if(ligne[0] == sommet.getX() && ligne[1] == sommet.getY()) {
-                            cellule = ligne[2];
-                        }
+            // On ajoute le score de l'arrivée si c'est un intérêt
+            if(isInteret(arrivee)) {
+                // On récupère la valeur de l'intérêt
+                for(int[] ligne : cases_interets) {
+                    if(ligne[0] == arrivee.getX() && ligne[1] == arrivee.getY()) {
+                        score += ligne[2];
+                        break;
                     }
-                    int score_tmp = computeCoutChemin(chemin_tmp, graphe) - cellule;
-
-                    distances.put(chemin_tmp, score_tmp);
                 }
             }
 
-            List<Sommet> chemin_optimise = null;
-            int score_optimise = score_courant;
-
-            for(Map.Entry<List<Sommet>, Integer> entry : distances.entrySet()) {
-                if(entry.getValue() < score_optimise) {
-                    chemin_optimise = entry.getKey();
-                    score_optimise = entry.getValue();
-                }
+            // On ajoute le score de l'arrivée si c'est un sommet stratégique
+            if(isStrategique(arrivee)) {
+                score += 30;
             }
 
-            if(chemin_optimise != null) {
-                chemin_optimal.addAll(chemin_optimise);
-            } else {
-                chemin_optimal.addAll(chemin_courant);
-            }
-
-            chemin_optimal.remove(chemin_optimal.size() - 1);
         }
-
-        chemin_optimal.add(chemin.get(chemin.size() - 1));
-
-        return chemin_optimal;
+        return score;
     }
 
+    public List<Sommet> pathFinder() {
 
-    /**
-     * Cette méthode développe le chemin passé en paramètre.
-     * @param chemin Le chemin, à développer.
-     * @return Le chemin développé.
-     */
-    public List<Sommet> buildChemin(List<Sommet> chemin) {
+        // On minimise le graphe
+        List<Sommet> sommets = new ArrayList<>();
+            sommets.addAll(getSommetsStrategiques());
+            sommets.addAll(getSommetsInterets());
+            sommets.add(getDepart());
+        Graphe graphe_minimise = streamlineGraphe(sommets, graphe);
 
-        List<Sommet> chemin_developpe = new ArrayList<>();
+        // On récupère le depart dans le graphe minimisé
+        Sommet depart = graphe_minimise.getSommets().get(
+                graphe_minimise.getIndexOfSommet(getDepart())
+        );
 
-        List<Sommet> chemin_tmp = new ArrayList<>();
+        // On récupère les sommets obligatoires dans le graphe minimisé
+        List<Sommet> sommets_obligatoires = new ArrayList<>();
+        for(Sommet sommet : getSommetsObligatoires()) {
+            sommets_obligatoires.add(graphe_minimise.getSommets().get(
+                    graphe_minimise.getIndexOfSommet(sommet)
+            ));
 
-        // On ajoute le départ
-        chemin_developpe.add(chemin.get(0));
-
-        // Entre chaque sommet et leur voisin, on cherche le chemin le plus court
-        for(int indice = 0; indice < chemin.size() - 1; indice++) {
-
-            Sommet
-                    sommet_A = chemin.get(indice),
-                    sommet_B = chemin.get(indice + 1);
-
-            chemin_tmp.addAll(
-                    graphe.dijkstra(
-                            graphe.getSommets().get(
-                                    graphe.getIndexOfSommet(sommet_A.getX(), sommet_A.getY())
-                            ),
-                            graphe.getSommets().get(
-                                    graphe.getIndexOfSommet(sommet_B.getX(), sommet_B.getY())
-                            )
-                    )
-            );
-
-            chemin_tmp.remove(0);
-            chemin_developpe.addAll(chemin_tmp);
-            chemin_tmp.clear();
+            System.out.println("\tSommet obligatoire : " + sommet.getNom());
         }
 
-        // On ajoute l'arrivée
-        chemin.add(chemin.get(chemin.size() - 1));
+        // On récupère tous les sommets sauf le départ
+        List<Sommet> sommets_sans_depart = graphe_minimise.getSommets();
+        sommets_sans_depart.remove(depart);
 
-        return chemin_developpe;
+        // On recherche tous les chemins possibles entre le départ et les autres sommets
+        System.out.println("\tRecherche des chemins possibles...");
+        List<List<Sommet>> chemins = new ArrayList<>();
+        for (Sommet sommet : sommets_sans_depart) {
+            System.out.println("\t\tRecherche des chemins vers " + sommet.getNom() + "...");
+            chemins.addAll(findAllPaths(depart, sommet, graphe_minimise));
+        }
+
+        System.out.println("\tNombre de chemins trouvés : " + chemins.size());
+
+        // On ne garde que les chemins qui passent par tous les sommets obligatoires
+        List<List<Sommet>> chemins_possibles = new ArrayList<>();
+        for(List<Sommet> chemin : chemins) {
+            if(chemin.containsAll(sommets_obligatoires)) {
+                chemins_possibles.add(chemin);
+            }
+        }
+
+        System.out.println("\tNombre de chemins possibles : " + chemins_possibles.size());
+
+        // On calcule le score de chaque chemin
+        Map<List<Sommet>, Integer> scores = new HashMap<>();
+        for(List<Sommet> chemin : chemins_possibles) {
+            scores.put(chemin, computePathScore(chemin, graphe_minimise));
+        }
+
+        // On sélectionne le chemin avec le meilleur score
+        List<Sommet> meilleur_chemin = null;
+        int meilleur_score = Integer.MIN_VALUE;
+        for(Map.Entry<List<Sommet>, Integer> entry : scores.entrySet()) {
+            if(entry.getValue() > meilleur_score) {
+                meilleur_chemin = entry.getKey();
+                meilleur_score = entry.getValue();
+            }
+        }
+
+        return meilleur_chemin;
     }
 }

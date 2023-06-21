@@ -1,0 +1,14 @@
+RECUP DONNEES
+
+CREATION GRAPHE
+
+MINIMISATION GRAPHE
+
+A* Continu : 
+	-> condition d'arrêt :
+		1. si le score actuel < score precedent
+		2. tous les points stratégiques parcourus
+
+RECONSTRUCTION DU CHEMIN DANS LE GRAPHE DE DEPART
+
+ECRITURE DU DATASET

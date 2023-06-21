@@ -20,12 +20,9 @@ public class Main {
      */
     public static void afficherChemin(List<Sommet> chemin) {
 
-        for(int i = 0; i < chemin.size() - 1; i++) {
-            System.out.print(chemin.get(i).getNom() + " -> ");
+        for(Sommet sommet : chemin) {
+            System.out.print(sommet.getNom() + " -> ");
         }
-        System.out.print(chemin.get(chemin.size() - 1).getNom());
-
-        System.out.println();
     }
 
     /**
@@ -189,31 +186,21 @@ public class Main {
     public static void resolutionDuProbleme() {
         String repertoire_courant = System.getProperty("user.dir");
 
-        System.out.println("\n[Création de la carte]");
-        System.out.print("\t");
+        System.out.println("\n[Création de la carte]\n\t");
         Carte c = importerDonneesATravailler(repertoire_courant + "/IO/in");
-
         System.out.println("\t" + c.getGraphe());
         System.out.println("[Terminée]");
 
-        List<Sommet> resultat = c.traceChemin();
-
-        System.out.println("\n[Chemin simplifié obtenu]");
+        System.out.println("\n[Recherche du plus court chemin]\n\t");
+        List<Sommet> chemin = c.pathFinder();
         System.out.print("\t");
-        afficherChemin(resultat);
-        System.out.println("[Fin]");
+        afficherChemin(chemin);
+        System.out.println("[Terminée]");
 
-        List<Sommet> chemin = c.buildChemin(resultat);
-
-        System.out.println("\n[Calcul du score]");
-        System.out.println("\tScore : " + c.computeScoreChemin(chemin));
-        System.out.println("[Terminé]");
-
-        System.out.println();
-
+        /*
         String repertoire_dataset = repertoire_courant + "/IO/out";
-
         dataset(chemin, repertoire_dataset + "/dataset_chemin.txt");
+         */
     }
 
     public static void main(String[] args) {

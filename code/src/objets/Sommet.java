@@ -42,6 +42,8 @@ public class Sommet {
      */
     public boolean isUnObstacle;
 
+    public double heuristique;
+
     /**
      * Constructeur de la classe Sommet avec tous les paramètres.
      * @param nom Nom du sommet.
@@ -60,6 +62,7 @@ public class Sommet {
         this.successeurs = successeurs;
         this.arcs = arcs;
         this.isUnObstacle = isUnObstacle;
+        this.heuristique = 0;
     }
 
     /**
@@ -114,11 +117,61 @@ public class Sommet {
     }
 
     /**
+     * Cette méthode permet de récupérer la liste des prédécesseurs du sommet.
+     * @return Liste des prédécesseurs du sommet.
+     */
+    public List<Sommet> getPredecesseurs() {
+        return predecesseurs;
+    }
+
+    /**
+     * Cette méthode permet de définir la liste des prédécesseurs du sommet.
+     */
+    public void setPredecesseurs(List<Sommet> predecesseurs) {
+        this.predecesseurs = predecesseurs;
+    }
+
+    /**
+     * Cette méthode permet de définir la liste des successeurs du sommet.
+     */
+    public void setSuccesseurs(List<Sommet> successeurs) {
+        this.successeurs = successeurs;
+    }
+
+    /**
+     * Cette méthode permet de récupérer la liste des successeurs du sommet.
+     * @return Liste des successeurs du sommet.
+     */
+    public List<Sommet> getSuccesseurs() {
+        return successeurs;
+    }
+
+    /**
+     * Cette méthode permet de récupérer l'heuristique du sommet.
+     */
+    public double getHeuristique() {
+        return heuristique;
+    }
+
+    /**
+     * Cette méthode permet de définir l'heuristique du sommet.
+     */
+    public void setHeuristique(double heuristique) {
+        this.heuristique = heuristique;
+    }
+
+    /**
      * Cette permet de connaitre l'état du sommet.
      * @return true si le sommet est un obstacle, false sinon.
      */
     public boolean isUnObstacle() {
         return isUnObstacle;
+    }
+
+    public void addPredecesseur(Sommet predecesseur) { this.predecesseurs.add(predecesseur); }
+
+    public void addSuccesseurs(Sommet successeur) {
+        this.successeurs.add(successeur);
     }
 
     @Override

@@ -58,6 +58,9 @@ public class Graphe {
 
                 sommet.getArcs().add(arc_cree);
 
+                sommet.addSuccesseurs(sommet_voisin);
+                sommet_voisin.addPredecesseur(sommet);
+
                 this.sommets.set(
                         getIndexOfSommet(sommet),
                         sommet
@@ -210,6 +213,76 @@ public class Graphe {
 
         List<Sommet> chemin = new ArrayList<>();
         Sommet sommet_courant = destination;
+
+        while (predecesseurs.get(sommet_courant) != null) {
+            chemin.add(sommet_courant);
+            sommet_courant = predecesseurs.get(sommet_courant);
+        }
+
+        chemin.add(sommet_courant);
+        Collections.reverse(chemin);
+
+        return chemin;
+    }
+
+    public int coutArc(Sommet depart, Sommet arrivee) {
+    	for(Arc arc : depart.getArcs()) {
+    		if(arc.getArrivee().equals(arrivee)) {
+    			return arc.getPoids();
+    		}
+    	}
+    	return 0;
+    }
+
+    public List<Sommet> aStarAlgorithm(Sommet depart, Sommet arrive) {
+        Map<Sommet, Integer> distances = new HashMap<>();
+        Map<Sommet, Sommet> predecesseurs = new HashMap<>();
+        PriorityQueue<Sommet> sommets_a_traiter = new PriorityQueue<>(Comparator.comparingInt(distances::get));
+
+        // Initialisation
+        for (Sommet sommet : sommets) {
+            if (sommet != null) {
+                distances.put(sommet, Integer.MAX_VALUE);
+                predecesseurs.put(sommet, null);
+            }
+        }
+        distances.put(depart, 0);
+        sommets_a_traiter.offer(depart);
+
+        while (!sommets_a_traiter.isEmpty()) {
+
+            Sommet sommet_courant = sommets_a_traiter.poll();
+
+            if (sommet_courant.equals(arrive)) {
+                break;
+            }
+
+            for (Arc arc : sommet_courant.getArcs()) {
+
+                Sommet sommet_voisin = arc.getArrivee();
+
+                if (!sommet_voisin.isUnObstacle()) {
+
+                    int poids_arc = arc.getPoids();
+
+                    if (distances.get(sommet_courant) == null) {
+                        distances.put(sommet_courant, Integer.MAX_VALUE);
+                    }
+
+                    int distance_voisin = distances.get(sommet_courant) + poids_arc;
+
+                    if (distance_voisin < distances.getOrDefault(sommet_voisin, Integer.MAX_VALUE)) {
+                        sommets_a_traiter.remove(sommet_voisin);
+                        distances.put(sommet_voisin, distance_voisin);
+                        predecesseurs.put(sommet_voisin, sommet_courant);
+                        sommets_a_traiter.offer(sommet_voisin);
+                    }
+                }
+            }
+        }
+
+        List<Sommet> chemin = new ArrayList<>();
+        Sommet sommet_courant = arrive;
 
         while (predecesseurs.get(sommet_courant) != null) {
             chemin.add(sommet_courant);
