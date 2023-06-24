@@ -1,6 +1,7 @@
 package objets;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Classe représentant un graphe.
@@ -83,6 +84,21 @@ public class Graphe {
      */
     public List<Sommet> getSommets() {
         return sommets;
+    }
+
+    public Arc getArc(Sommet A, Sommet B) {
+
+        for(Sommet sommet : sommets) {
+            if(sommet.getNom().equals(A.getNom())) {
+                for(Arc arc : sommet.getArcs()) {
+                    if(arc.getArrivee().getNom().equals(B.getNom())) {
+                        return arc;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -226,12 +242,13 @@ public class Graphe {
     }
 
     public int coutArc(Sommet depart, Sommet arrivee) {
-    	for(Arc arc : depart.getArcs()) {
-    		if(arc.getArrivee().equals(arrivee)) {
-    			return arc.getPoids();
-    		}
-    	}
-    	return 0;
+        Map<Sommet, Integer> arcMap = new HashMap<>();
+
+        for (Arc arc : depart.getArcs()) {
+            arcMap.put(arc.getArrivee(), arc.getPoids());
+        }
+
+        return arcMap.getOrDefault(arrivee, Integer.MAX_VALUE);
     }
 
     public List<Sommet> aStarAlgorithm(Sommet depart, Sommet arrive) {
@@ -294,6 +311,8 @@ public class Graphe {
 
         return chemin;
     }
+
+
 
     @Override
     public String toString() {

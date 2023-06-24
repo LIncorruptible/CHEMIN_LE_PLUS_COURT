@@ -20,9 +20,19 @@ public class Main {
      */
     public static void afficherChemin(List<Sommet> chemin) {
 
-        for(Sommet sommet : chemin) {
-            System.out.print(sommet.getNom() + " -> ");
+        System.out.print("\n\t");
+
+        for(int i = 0; i < chemin.size(); i++) {
+
+            System.out.print(chemin.get(i).getNom());
+
+            if(i != chemin.size() - 1) {
+                System.out.print(" -> ");
+            }
+
         }
+
+        System.out.println("\n");
     }
 
     /**
@@ -106,7 +116,7 @@ public class Main {
         try {
             sc = new Scanner(new File(repertoire_des_donnees + "/depart.txt"));
 
-            sc.useDelimiter(",");
+            sc.useDelimiter("_");
 
             depart[0] = sc.nextInt();
             depart[1] = sc.nextInt();
@@ -122,7 +132,7 @@ public class Main {
         try {
             br = new BufferedReader(new FileReader(repertoire_des_donnees + "/obligatoire.txt"));
             String line = br.readLine();
-            String[] ligne = line.split(",");
+            String[] ligne = line.split("_");
             obligations = new int[ligne.length];
 
             for(int i = 0; i < ligne.length; i++) {
@@ -135,11 +145,11 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-        int[][] matrice_adjacences = importMatrice(",", repertoire_des_donnees + "/matrice.txt");
+        int[][] matrice_adjacences = importMatrice("\t", repertoire_des_donnees + "/matrice.txt");
 
-        int[][] matrice_interets = importMatrice(",", repertoire_des_donnees + "/matrice_interet.txt");
+        int[][] matrice_interets = importMatrice("_", repertoire_des_donnees + "/matrice_interet.txt");
 
-        int[][] matrice_strategies = importMatrice(",", repertoire_des_donnees + "/matrice_strategique.txt");
+        int[][] matrice_strategies = importMatrice("_", repertoire_des_donnees + "/matrice_strategique.txt");
 
         System.out.print("Traduction pour le code ...");
             traduirePourLeCode(matrice_interets, matrice_strategies, obligations, depart);
@@ -193,7 +203,6 @@ public class Main {
 
         System.out.println("\n[Recherche du plus court chemin]\n\t");
         List<Sommet> chemin = c.pathFinder();
-        System.out.print("\t");
         afficherChemin(chemin);
         System.out.println("[Terminée]");
 
