@@ -206,10 +206,8 @@ public class Main {
         afficherChemin(chemin);
         System.out.println("[Terminée]");
 
-        /*
         String repertoire_dataset = repertoire_courant + "/IO/out";
         dataset(chemin, repertoire_dataset + "/dataset_chemin.txt");
-         */
     }
 
     public static void main(String[] args) {
