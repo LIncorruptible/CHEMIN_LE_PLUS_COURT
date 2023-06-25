@@ -86,21 +86,6 @@ public class Graphe {
         return sommets;
     }
 
-    public Arc getArc(Sommet A, Sommet B) {
-
-        for(Sommet sommet : sommets) {
-            if(sommet.getNom().equals(A.getNom())) {
-                for(Arc arc : sommet.getArcs()) {
-                    if(arc.getArrivee().getNom().equals(B.getNom())) {
-                        return arc;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
     /**
      * Retourne l'indice d'un sommet dans la liste des sommets du graphe.
      * @param sommet Sommet à rechercher.
@@ -241,6 +226,12 @@ public class Graphe {
         return chemin;
     }
 
+    /**
+     * Retourne le coût d'un arc.
+     * @param depart Sommet de départ.
+     * @param arrivee Sommet d'arrivée.
+     * @return Coût de l'arc.
+     */
     public int coutArc(Sommet depart, Sommet arrivee) {
         Map<Sommet, Integer> arcMap = new HashMap<>();
 
@@ -251,6 +242,12 @@ public class Graphe {
         return arcMap.getOrDefault(arrivee, Integer.MAX_VALUE);
     }
 
+    /**
+     * Retourne le chemin le plus court entre deux sommets en utilisant l'algorithme A*. (Heuristique : distance euclidienne)
+     * @param depart Sommet de départ.
+     * @param arrive Sommet d'arrivée.
+     * @return Liste des sommets du chemin le plus court.
+     */
     public List<Sommet> aStarAlgorithm(Sommet depart, Sommet arrive) {
         Map<Sommet, Integer> distances = new HashMap<>();
         Map<Sommet, Sommet> predecesseurs = new HashMap<>();
