@@ -42,6 +42,9 @@ public class Sommet {
      */
     public boolean isUnObstacle;
 
+    /**
+     * Heuristique du sommet pour l'algorithme A*.
+     */
     public double heuristique;
 
     /**
@@ -125,39 +128,11 @@ public class Sommet {
     }
 
     /**
-     * Cette méthode permet de définir la liste des prédécesseurs du sommet.
-     */
-    public void setPredecesseurs(List<Sommet> predecesseurs) {
-        this.predecesseurs = predecesseurs;
-    }
-
-    /**
-     * Cette méthode permet de définir la liste des successeurs du sommet.
-     */
-    public void setSuccesseurs(List<Sommet> successeurs) {
-        this.successeurs = successeurs;
-    }
-
-    /**
      * Cette méthode permet de récupérer la liste des successeurs du sommet.
      * @return Liste des successeurs du sommet.
      */
     public List<Sommet> getSuccesseurs() {
         return successeurs;
-    }
-
-    /**
-     * Cette méthode permet de récupérer l'heuristique du sommet.
-     */
-    public double getHeuristique() {
-        return heuristique;
-    }
-
-    /**
-     * Cette méthode permet de définir l'heuristique du sommet.
-     */
-    public void setHeuristique(double heuristique) {
-        this.heuristique = heuristique;
     }
 
     /**
@@ -168,8 +143,16 @@ public class Sommet {
         return isUnObstacle;
     }
 
+    /**
+     * Cette méthode permet d'ajouter un prédecesseur.
+     * @param predecesseur Sommet prédecesseur.
+     */
     public void addPredecesseur(Sommet predecesseur) { this.predecesseurs.add(predecesseur); }
 
+    /**
+     * Cette méthode permet d'ajouter un successeur.
+     * @param successeur Sommet successeur.
+     */
     public void addSuccesseurs(Sommet successeur) {
         this.successeurs.add(successeur);
     }

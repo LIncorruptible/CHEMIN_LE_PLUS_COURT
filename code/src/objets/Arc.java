@@ -34,8 +34,6 @@ public class Arc {
         this.poids = poids;
     }
 
-    public Sommet getDepart() { return Depart; }
-
     /**
      * Cette méthode permet de récupérer le sommet d'arrivée de l'arc.
      * @return Sommet d'arrivée de l'arc.
