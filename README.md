@@ -4,9 +4,7 @@ Trouver la ou les routes qui rapportent le plus de points entre des points donn�
 
 L'analyse se situe dans le dossier `docs`.
 
-Le pseudo code est découpé en plusieurs fichiers et placé dans le répertoire du projet `docs`.
-
-Le code complet est placé dans le dossier code, il s’agit sur projet complet développé sur `Intellij`.
+Le code complet est placé dans le dossier code, il s’agit d'un projet complet développé sur `Intellij`.
 
 Une Javadoc a été générée et placée dans le dossier `javadoc`.
 
